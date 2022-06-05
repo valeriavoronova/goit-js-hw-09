@@ -2,11 +2,16 @@
 // const flatpickr = require("flatpickr");
 // // es modules are recommended, if available, especially for typescript
 import flatpickr from "flatpickr";
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import "flatpickr/dist/flatpickr.min.css";
 
 const refs = {
-    timePick: document.querySelector('#datetime-picker'),
-    btnStart: document.querySelector('button[data-start]'),
+  timePick: document.querySelector('#datetime-picker'),
+  btnStart: document.querySelector('button[data-start]'),
+  days: document.querySelector('span[data-days]'),
+  hours: document.querySelector('span[data-hours]'),
+  minutes: document.querySelector('span[data-minutes]'),
+  seconds: document.querySelector('span[data-seconds]'),
 }
 
 const options = {
@@ -18,7 +23,7 @@ const options = {
 
       if (selectedDates[0] < new Date()) {
           refs.btnStart.disabled = true;
-          window.alert("Please choose a date in the future");
+          Notify.failure('Please choose a date in the future');
           return;
       }
     refs.btnStart.disabled = false;
@@ -29,15 +34,20 @@ const options = {
 
 const timer = {
   start() {
-    const curTime = Date.parse(localStorage.getItem('savedTime'));
+    const endTime = Date.parse(localStorage.getItem('savedTime'));
 
     setInterval(() => {
-      const timeDec = Date.now();
-      const deltaTime = curTime - timeDec;
-      const timeComp = convertMs(deltaTime);
-      console.log(`${curTime} - ${timeDec} = `,timeComp);
+      const curTime = Date.now();
+      const deltaTime = endTime - curTime;
+      const { days, hours, minutes, seconds } = convertMs(deltaTime);
+      refs.days.textContent = `${days}`;
+      refs.hours.textContent = `${hours}`;
+      refs.minutes.textContent = `${minutes}`;
+      refs.seconds.textContent = `${seconds}`;
+      console.log(`${days}:${hours}:${minutes}:${seconds}`);
     }, 1000);
-     // return console.log(convertMs(curTime), "133");
+    localStorage.removeItem('savedTime');
+    refs.btnStart.disabled = true;
   }
 };
 
@@ -55,17 +65,17 @@ function convertMs(ms) {
   const day = hour * 24;
 
   // Remaining days
-  const days = pad(Math.floor(ms / day));
+  const days = addLeadingZero(Math.floor(ms / day));
   // Remaining hours
-  const hours = pad(Math.floor((ms % day) / hour));
+  const hours = addLeadingZero(Math.floor((ms % day) / hour));
   // Remaining minutes
-  const minutes = pad(Math.floor(((ms % day) % hour) / minute));
+  const minutes = addLeadingZero(Math.floor(((ms % day) % hour) / minute));
   // Remaining seconds
-  const seconds = pad(Math.floor((((ms % day) % hour) % minute) / second));
+  const seconds = addLeadingZero(Math.floor((((ms % day) % hour) % minute) / second));
 
   return { days, hours, minutes, seconds };
 }
 
-function pad(value) {
+function addLeadingZero(value) {
   return String(value).padStart(2, '0');
 }

@@ -15,39 +15,37 @@ const options = {
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-      //console.log(selectedDates[0]);
-      // const curDate = this.defaultDate;
-      // console.log("def",this.defaultDate);
+
       if (selectedDates[0] < new Date()) {
           refs.btnStart.disabled = true;
           window.alert("Please choose a date in the future");
           return;
       }
     refs.btnStart.disabled = false;
-    return selectedDates[0];
+    localStorage.setItem('savedTime', selectedDates[0]);
   },
+  
 };
 
 const timer = {
   start() {
-    const curTime = options.defaultDate;
-    //const selectedTime;
-      //const timeToCount = selectedTime - curTime;
+    const curTime = Date.parse(localStorage.getItem('savedTime'));
+
     setInterval(() => {
-      console.log(convertMs(curTime), "133");
+      const timeDec = Date.now();
+      const deltaTime = curTime - timeDec;
+      const timeComp = convertMs(deltaTime);
+      console.log(`${curTime} - ${timeDec} = `,timeComp);
     }, 1000);
      // return console.log(convertMs(curTime), "133");
   }
 };
 
-timer.start();
-const flat = new flatpickr(refs.timePick, options);
 
-refs.btnStart.addEventListener('click', convertMs);
+const fp = new flatpickr(refs.timePick, options);
 
-// const timeChangeId = setInterval(() => {
-//     //document.querySelector('span[data-days]').textContent -= 1;
-//  }, 1000);
+refs.btnStart.addEventListener('click', timer.start);
+
 
 function convertMs(ms) {
   // Number of milliseconds per unit of time
@@ -57,13 +55,17 @@ function convertMs(ms) {
   const day = hour * 24;
 
   // Remaining days
-  const days = Math.floor(ms / day);
+  const days = pad(Math.floor(ms / day));
   // Remaining hours
-  const hours = Math.floor((ms % day) / hour);
+  const hours = pad(Math.floor((ms % day) / hour));
   // Remaining minutes
-  const minutes = Math.floor(((ms % day) % hour) / minute);
+  const minutes = pad(Math.floor(((ms % day) % hour) / minute));
   // Remaining seconds
-  const seconds = Math.floor((((ms % day) % hour) % minute) / second);
+  const seconds = pad(Math.floor((((ms % day) % hour) % minute) / second));
 
   return { days, hours, minutes, seconds };
+}
+
+function pad(value) {
+  return String(value).padStart(2, '0');
 }

@@ -4,6 +4,8 @@
 import flatpickr from "flatpickr";
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import "flatpickr/dist/flatpickr.min.css";
+require("flatpickr/dist/themes/material_red.css");
+
 
 const refs = {
   timePick: document.querySelector('#datetime-picker'),
@@ -12,7 +14,13 @@ const refs = {
   hours: document.querySelector('span[data-hours]'),
   minutes: document.querySelector('span[data-minutes]'),
   seconds: document.querySelector('span[data-seconds]'),
+  // timerRef: document.querySelector('.timer'),
+  field: document.querySelectorAll('.field'),
 }
+
+console.log('refs.field');
+//refs.field.childNodes.style.display = 'block';
+//console.log(refs.field.firstChild.style.display);
 
 const options = {
   enableTime: true,
@@ -26,6 +34,7 @@ const options = {
           Notify.failure('Please choose a date in the future');
           return;
       }
+      
     refs.btnStart.disabled = false;
     localStorage.setItem('savedTime', selectedDates[0]);
   },
@@ -56,6 +65,8 @@ const fp = new flatpickr(refs.timePick, options);
 
 refs.btnStart.addEventListener('click', timer.start);
 
+// refs.timerRef.style.display = 'table';
+// refs.fieldRef.style.display = 'table-cell';
 
 function convertMs(ms) {
   // Number of milliseconds per unit of time

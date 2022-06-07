@@ -15,12 +15,9 @@ const refs = {
   minutes: document.querySelector('span[data-minutes]'),
   seconds: document.querySelector('span[data-seconds]'),
   // timerRef: document.querySelector('.timer'),
-  field: document.querySelectorAll('.field'),
+  label: document.querySelectorAll('.label'),
 }
 
-console.log('refs.field');
-//refs.field.childNodes.style.display = 'block';
-//console.log(refs.field.firstChild.style.display);
 
 const options = {
   enableTime: true,
@@ -90,3 +87,8 @@ function convertMs(ms) {
 function addLeadingZero(value) {
   return String(value).padStart(2, '0');
 }
+
+console.log(refs.label);
+// refs.label.style.display = 'block';
+// refs.label.style.display = 'flex';
+//console.log(refs.field.firstChild.style.display);

@@ -50,10 +50,10 @@ const timer = {
       refs.hours.textContent = `${hours}`;
       refs.minutes.textContent = `${minutes}`;
       refs.seconds.textContent = `${seconds}`;
-      console.log(`${days}:${hours}:${minutes}:${seconds}`);
     }, 1000);
     localStorage.removeItem('savedTime');
     refs.btnStart.disabled = true;
+    refs.timePick.disabled = true;
   }
 };
 
